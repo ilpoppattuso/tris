@@ -29,4 +29,4 @@ This is a simple Tic-Tac-Toe game implemented in Python using the Tkinter librar
 To run the game, execute the following command in your terminal:
 
 ```sh
-python 
+python main.py
