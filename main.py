@@ -6,6 +6,7 @@ class TicTacToe:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Tic-Tac-Toe")
+        self.window.configure(bg="#f0f0f0")
         self.board = [""] * 9
         self.current_player = "X"
         self.difficulty = "Easy"
@@ -15,16 +16,17 @@ class TicTacToe:
         self.buttons = []
         for i in range(9):
             button = tk.Button(self.window, text="", font=("Arial", 20), width=5, height=2,
-                               command=lambda i=i: self.player_move(i))
-            button.grid(row=i // 3, column=i % 3)
+                               command=lambda i=i: self.player_move(i), bg="#ffffff", fg="#333333")
+            button.grid(row=i // 3, column=i % 3, padx=5, pady=5)
             self.buttons.append(button)
 
         self.difficulty_menu = tk.StringVar(value="Easy")
         dropdown = tk.OptionMenu(self.window, self.difficulty_menu, "Easy", "Medium", "Impossible")
-        dropdown.grid(row=3, column=0, columnspan=3)
+        dropdown.config(font=("Arial", 14), bg="#ffffff", fg="#333333")
+        dropdown.grid(row=3, column=0, columnspan=3, pady=10)
 
-        reset_button = tk.Button(self.window, text="Reset", command=self.reset_game)
-        reset_button.grid(row=4, column=0, columnspan=3)
+        reset_button = tk.Button(self.window, text="Reset", command=self.reset_game, font=("Arial", 14), bg="#ffffff", fg="#333333")
+        reset_button.grid(row=4, column=0, columnspan=3, pady=10)
 
     def player_move(self, index):
         if self.board[index] == "" and self.current_player == "X":
@@ -62,7 +64,6 @@ class TicTacToe:
         return random.choice([i for i, spot in enumerate(self.board) if spot == ""])
 
     def medium_ai(self):
-        # 1. Cerca di vincere
         for i in range(9):
             if self.board[i] == "":
                 self.board[i] = "O"
@@ -71,7 +72,6 @@ class TicTacToe:
                     return i
                 self.board[i] = ""
 
-        # 2. Blocca l'avversario
         for i in range(9):
             if self.board[i] == "":
                 self.board[i] = "X"
@@ -80,18 +80,14 @@ class TicTacToe:
                     return i
                 self.board[i] = ""
 
-        # 3. Gioca al centro se disponibile
         if self.board[4] == "":
             return 4
 
-        # 4. Gioca in un angolo libero
         for i in [0, 2, 6, 8]:
             if self.board[i] == "":
                 return i
 
-        # 5. Mosse casuali per rimanenti
         return self.random_move()
-
 
     def minimax(self, board, player):
         if self.check_winner("O", board):
@@ -130,26 +126,26 @@ class TicTacToe:
         self.board = [""] * 9
         self.current_player = "X"
         for button in self.buttons:
-            button.config(text="")
+            button.config(text="", bg="#ffffff")
 
     def run(self):
         self.window.mainloop()
-
 
 
 class SuperTicTacToe:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Super Tic-Tac-Toe")
+        self.window.configure(bg="#f0f0f0")
         self.board = [[""] * 9 for _ in range(9)]
         self.sub_boards_status = [[""] * 3 for _ in range(3)]
         self.current_player = "X"
         self.active_board = None
         self.bg_colors = {
-            "X": "#ffcdd2",  # Light red
-            "O": "#c8e6c9",  # Light green
-            "Draw": "#f5f5f5",  # Light gray
-            "Active": "#e3f2fd"  # Light blue
+            "X": "#ffcdd2",
+            "O": "#c8e6c9",
+            "Draw": "#f5f5f5",
+            "Active": "#e3f2fd"
         }
         self.difficulty = "Easy"
         self.difficulty_menu = tk.StringVar(value="Easy")
@@ -157,20 +153,18 @@ class SuperTicTacToe:
         self.create_widgets()
 
     def create_widgets(self):
-        self.main_frame = tk.Frame(self.window)
+        self.main_frame = tk.Frame(self.window, bg="#f0f0f0")
         self.main_frame.grid(padx=10, pady=10)
         
-        # Create 3x3 frames for sub-boards
         self.sub_frames = []
         for i in range(3):
             row_frames = []
             for j in range(3):
-                frame = tk.Frame(self.main_frame, relief="solid", borderwidth=2)
+                frame = tk.Frame(self.main_frame, relief="solid", borderwidth=2, bg="#ffffff")
                 frame.grid(row=i, column=j, padx=3, pady=3)
                 row_frames.append(frame)
             self.sub_frames.append(row_frames)
         
-        # Create buttons inside each sub-board
         self.buttons = []
         for i in range(9):
             row_buttons = []
@@ -178,24 +172,23 @@ class SuperTicTacToe:
                 sub_i, sub_j = i // 3, j // 3
                 frame = self.sub_frames[sub_i][sub_j]
                 button = tk.Button(frame, text="", font=("Arial", 16), width=2, height=1,
-                                 command=lambda i=i, j=j: self.player_move(i, j))
+                                 command=lambda i=i, j=j: self.player_move(i, j), bg="#ffffff", fg="#333333")
                 button.grid(row=i%3, column=j%3, padx=1, pady=1)
                 row_buttons.append(button)
             self.buttons.append(row_buttons)
 
-        reset_button = tk.Button(self.window, text="Reset Game", command=self.reset_game)
+        reset_button = tk.Button(self.window, text="Reset Game", command=self.reset_game, font=("Arial", 14), bg="#ffffff", fg="#333333")
         reset_button.grid(row=1, column=0, pady=10)
-        # difficulty dropdown
+        
         dropdown = tk.OptionMenu(self.window, self.difficulty_menu, "Easy", "Medium", "Impossible")
+        dropdown.config(font=("Arial", 14), bg="#ffffff", fg="#333333")
         dropdown.grid(row=2, column=0, pady=5)
 
     def update_board_colors(self):
-        # Reset all backgrounds
         for i in range(9):
             for j in range(9):
-                self.buttons[i][j].config(bg="white")
+                self.buttons[i][j].config(bg="#ffffff")
         
-        # Color completed sub-boards
         for i in range(3):
             for j in range(3):
                 if self.sub_boards_status[i][j] in self.bg_colors:
@@ -206,7 +199,6 @@ class SuperTicTacToe:
                             button_j = j * 3 + sub_j
                             self.buttons[button_i][button_j].config(bg=color)
         
-        # Highlight active board
         if self.active_board is not None:
             i, j = self.active_board
             for sub_i in range(3):
@@ -272,7 +264,6 @@ class SuperTicTacToe:
     def make_medium_move(self):
         valid_moves = [(i, j) for i in range(9) for j in range(9) if self.is_valid_move(i, j)]
         
-        # Try to win
         for i, j in valid_moves:
             board_copy = [row[:] for row in self.board]
             board_copy[i][j] = "O"
@@ -283,7 +274,6 @@ class SuperTicTacToe:
                 self.current_player = "X"
                 return
         
-        # Block opponent's win
         for i, j in valid_moves:
             board_copy = [row[:] for row in self.board]
             board_copy[i][j] = "X"
@@ -294,7 +284,6 @@ class SuperTicTacToe:
                 self.current_player = "X"
                 return
         
-        # Otherwise make random move
         self.make_random_move()
 
     def would_win_sub_board(self, board, board_i, board_j, player):
@@ -303,7 +292,6 @@ class SuperTicTacToe:
         return any(all(sub_board[pos] == player for pos in combo) for combo in wins)
 
     def make_best_move(self):
-        # Implementing a full minimax for Super TicTacToe would be very complex
         self.make_medium_move()
 
     def make_move(self, i, j, player):
@@ -338,7 +326,7 @@ class SuperTicTacToe:
         self.active_board = None
         for i in range(9):
             for j in range(9):
-                self.buttons[i][j].config(text="", bg="white")
+                self.buttons[i][j].config(text="", bg="#ffffff")
 
     def run(self):
         self.window.mainloop()
@@ -346,6 +334,7 @@ class SuperTicTacToe:
 def main_menu():
     root = tk.Tk()
     root.title("Game Selection")
+    root.configure(bg="#f0f0f0")
     
     def start_tictactoe():
         root.destroy()
@@ -357,30 +346,8 @@ def main_menu():
         game = SuperTicTacToe()
         game.run()
 
-    tk.Button(root, text="TicTacToe", command=start_tictactoe).pack(pady=10)
-    tk.Button(root, text="Super TicTacToe", command=start_supertictactoe).pack(pady=10)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main_menu()
-
-
-def main_menu():
-    root = tk.Tk()
-    root.title("Game Selection")
-    
-    def start_tictactoe():
-        root.destroy()
-        game = TicTacToe()
-        game.run()
-    
-    def start_supertictactoe():
-        root.destroy()
-        game = SuperTicTacToe()
-        game.run()
-
-    tk.Button(root, text="TicTacToe", command=start_tictactoe).pack(pady=10)
-    tk.Button(root, text="Super TicTacToe", command=start_supertictactoe).pack(pady=10)
+    tk.Button(root, text="TicTacToe", command=start_tictactoe, font=("Arial", 14), bg="#ffffff", fg="#333333").pack(pady=10)
+    tk.Button(root, text="Super TicTacToe", command=start_supertictactoe, font=("Arial", 14), bg="#ffffff", fg="#333333").pack(pady=10)
     root.mainloop()
 
 if __name__ == "__main__":
